@@ -80,6 +80,7 @@ public class VootServiceApplication {
           throw new IllegalArgumentException("Unknown external provider-type: " + type);
       }
     }).collect(Collectors.toList());
+
     return new ExternalGroupsService(groupClients);
   }
 

@@ -27,7 +27,7 @@ import voot.valueobject.Group;
 @RestController
 public class VootController {
 
-  private static Logger LOG = LoggerFactory.getLogger(VootController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VootController.class);
 
   private ExternalGroupsService externalGroupsService;
 
@@ -142,12 +142,14 @@ public class VootController {
     return model;
   }
 
+  @SuppressWarnings("serial")
   public static abstract class MalformedUrnException extends Exception {
     public MalformedUrnException(String message) {
       super(message);
     }
   }
 
+  @SuppressWarnings("serial")
   public static class MalformedPersonUrnException extends MalformedUrnException {
     private static final String MESSAGE_FORMAT = "%s is not a valid person-urn. Values must adhere to regexp: %s";
 
@@ -156,6 +158,7 @@ public class VootController {
     }
   }
 
+  @SuppressWarnings("serial")
   public static class MalformedGroupUrnException extends MalformedUrnException {
     private static final String MESSAGE_FORMAT = "%s is not a valid group-urn. Values must adhere to regexp: %s";
 

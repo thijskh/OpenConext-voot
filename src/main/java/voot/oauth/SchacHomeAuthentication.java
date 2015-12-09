@@ -1,11 +1,11 @@
 package voot.oauth;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+@SuppressWarnings("serial")
 public class SchacHomeAuthentication extends UsernamePasswordAuthenticationToken {
 
   private final String schacHomeOrganization;

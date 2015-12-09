@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+@SuppressWarnings("serial")
 public class ClientCredentialsAuthentication extends AbstractAuthenticationToken {
 
   private String clientId;
