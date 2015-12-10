@@ -37,13 +37,9 @@ public class GrouperSoapClient extends AbstractProvider {
   private static final Logger LOG = LoggerFactory.getLogger(GrouperSoapClient.class);
 
   private final NamespaceContext grouperNameSpaceContext = new GrouperNameSpaceContext();
-
   private final Pattern replacementPattern = Pattern.compile("\\[(.+?)\\]");
-
   private final Charset charSet = Charset.forName("UTF-8");
-
   private final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
   private final Map<String, String> soapTemplates = new HashMap<>();
 
   public GrouperSoapClient(Configuration configuration) {
@@ -69,8 +65,8 @@ public class GrouperSoapClient extends AbstractProvider {
       List<Group> groups = parseGroups(response);
 
       LOG.debug("getGroupMemberships result: {} groups.", groups.size());
-      return groups;
 
+      return groups;
     } catch (Exception exception) {
       LOG.warn("Failed to invoke getGroupMemberships, returning empty result.", exception);
       return Collections.emptyList();
@@ -79,11 +75,10 @@ public class GrouperSoapClient extends AbstractProvider {
 
   @Override
   public Optional<Group> getGroupMembership(final String uid, final String groupId) {
-    final Optional<String> localGroupId = UrnUtils.extractLocalGroupId(groupId);
-    if (!localGroupId.isPresent()) {
-      throw new IllegalArgumentException("Unable to infer localgroupId from " + groupId);
-    }
-    Map<String, String> replacements = ImmutableMap.of("subjectId", uid, "groupId", localGroupId.get());
+    String localGroupId = UrnUtils.extractLocalGroupId(groupId)
+        .orElseThrow(() -> new IllegalArgumentException("Unable to infer localgroupId from " + groupId));
+
+    Map<String, String> replacements = ImmutableMap.of("subjectId", uid, "groupId", localGroupId);
     try {
       LOG.debug("Querying getGroupMembership API for subjectId: {}", uid);
       String soap = replaceTokens("soap/HasMemberLite.xml", replacements);
@@ -215,7 +210,7 @@ public class GrouperSoapClient extends AbstractProvider {
       }
     }
     matcher.appendTail(buffer);
-    return buffer.toString();
 
+    return buffer.toString();
   }
 }

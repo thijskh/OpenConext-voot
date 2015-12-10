@@ -22,7 +22,7 @@ public class GrouperNameSpaceContext implements NamespaceContext {
   }
 
   @Override
-  public Iterator getPrefixes(String namespaceURI) {
+  public Iterator<?> getPrefixes(String namespaceURI) {
     return null;
   }
 }

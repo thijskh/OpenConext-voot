@@ -19,7 +19,7 @@ public class OpenSocialClient extends Voot2Provider {
   @Override
   protected List<Group> parseGroups(String response) {
     @SuppressWarnings("unchecked")
-    List<Map<String, Object>> groups = (List) parseJson(response, Map.class).get("entry");
+    List<Map<String, Object>> groups = (List<Map<String, Object>>) parseJson(response, Map.class).get("entry");
     return groups.stream().map(map -> {
       Object idHolder = map.get("id");
       //deprecated Open Social protocol has compound ID

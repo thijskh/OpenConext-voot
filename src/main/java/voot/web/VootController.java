@@ -44,11 +44,11 @@ public class VootController {
 
     LOG.debug("me/groups on behalf of uid: {}, schacHomeOrg: {}, accessToken: {}, clientId: {}", authentication.getName(), schacHome, accessToken, clientId);
 
-    final List<Group> myGroups = externalGroupsService.getMyGroups(authentication.getName(), schacHome);
+    List<Group> myGroups = externalGroupsService.getMyGroups(authentication.getName(), schacHome);
 
     LOG.debug("me/groups result for uid {}: {}", authentication.getName(), myGroups);
-    return myGroups;
 
+    return myGroups;
   }
 
   @RequestMapping(value = "/me/groups/{groupId:.+}")
@@ -58,10 +58,12 @@ public class VootController {
     String clientId = authentication.getOAuth2Request().getClientId();
 
     LOG.debug("groups/{} on behalf of uid {}, schacHomeOrg: {}, accessToken: {}, clientId {}", groupId, authentication.getName(), schacHome, accessToken, clientId);
-    if (! UrnUtils.isFullyQualifiedGroupName(groupId)) {
+
+    if (!UrnUtils.isFullyQualifiedGroupName(groupId)) {
       throw new MalformedGroupUrnException(groupId);
     }
-    final Optional<Group> group = externalGroupsService.getMyGroupById(authentication.getName(), groupId);
+
+    Optional<Group> group = externalGroupsService.getMyGroupById(authentication.getName(), groupId);
 
     LOG.debug("groups/{} result for uid {}: {}", groupId, authentication.getName(), group);
 
@@ -77,11 +79,9 @@ public class VootController {
 
     assertClientCredentialsClient(authentication, clientId);
 
-    Optional<String> schacHome = UrnUtils.getSchacHomeFromGroupUrn(groupId);
-    if (!schacHome.isPresent()) {
-      throw new MalformedGroupUrnException(groupId);
-    }
-    final Optional<Group> group = externalGroupsService.getMyGroupById(userId, groupId);
+    UrnUtils.getSchacHomeFromGroupUrn(groupId).orElseThrow(() -> new MalformedGroupUrnException(groupId));
+
+    Optional<Group> group = externalGroupsService.getMyGroupById(userId, groupId);
 
     LOG.debug("groups/{} result: {}", groupId, group);
 
@@ -97,11 +97,9 @@ public class VootController {
 
     assertClientCredentialsClient(authentication, clientId);
 
-    Optional<String> schacHome = UrnUtils.getSchacHomeFromPersonUrn(userId);
-    if (!schacHome.isPresent()) {
-      throw new MalformedPersonUrnException(userId);
-    }
-    final List<Group> myGroups = externalGroupsService.getMyGroups(userId, schacHome.get());
+    String schacHome = UrnUtils.getSchacHomeFromPersonUrn(userId).orElseThrow(() -> new MalformedPersonUrnException(userId));
+
+    List<Group> myGroups = externalGroupsService.getMyGroups(userId, schacHome);
 
     LOG.debug("internal/groups/{} result: {}", userId, myGroups);
 
@@ -117,11 +115,9 @@ public class VootController {
 
     assertClientCredentialsClient(authentication, clientId);
 
-    Optional<String> schacHome = UrnUtils.getSchacHomeFromPersonUrn(userId);
-    if (!schacHome.isPresent()) {
-      throw new MalformedPersonUrnException(userId);
-    }
-    final List<Group> groups = externalGroupsService.getMyExternalGroups(userId, schacHome.get());
+    String schacHome = UrnUtils.getSchacHomeFromPersonUrn(userId).orElseThrow(() -> new MalformedPersonUrnException(userId));
+
+    List<Group> groups = externalGroupsService.getMyExternalGroups(userId, schacHome);
 
     LOG.debug("internal/external-groups/{} result: {}", userId, groups);
 
