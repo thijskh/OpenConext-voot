@@ -1,6 +1,7 @@
 package voot.provider;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -13,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import voot.util.UrnUtils;
 import voot.valueobject.Group;
+import voot.valueobject.Member;
 import voot.valueobject.Membership;
 
 import javax.xml.namespace.NamespaceContext;
@@ -24,6 +26,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -94,7 +97,21 @@ public class GrouperSoapClient extends AbstractProvider {
       LOG.warn("Failed to invoke grouper, returning empty result.", exception);
       return Optional.empty();
     }
+  }
 
+  public List<Member> getMembersOfGroup(final String groupId) {
+    String localGroupId = UrnUtils.extractLocalGroupId(groupId)
+        .orElseThrow(() -> new IllegalArgumentException("Unable to infer localgroupId from " + groupId));
+
+    Map<String, String> replacements = ImmutableMap.of("groupId", localGroupId);
+    try {
+      String soap = replaceTokens("soap/GetMembershipsLite.xml", replacements);
+
+      return parseMembers(getGrouperResponse(soap));
+    } catch (IOException e) {
+      LOG.warn("Failed to invoke grouper, returning empty result.", e);
+      return Collections.emptyList();
+    }
   }
 
   private ResponseEntity<String> getGrouperResponse(String soap) {
@@ -103,6 +120,33 @@ public class GrouperSoapClient extends AbstractProvider {
     HttpEntity<String> entity = new HttpEntity<>(soap, headers);
 
     return restTemplate.exchange(configuration.url, HttpMethod.POST, entity, String.class);
+  }
+
+  private List<Member> parseMembers(ResponseEntity<String> response) {
+    try (InputStream is = new ByteArrayInputStream(response.getBody().getBytes())) {
+      Document document = factory.newDocumentBuilder().parse(is);
+
+      XPath xpath = XPathFactory.newInstance().newXPath();
+      xpath.setNamespaceContext(grouperNameSpaceContext);
+      NodeList nodes = (NodeList) xpath.evaluate("//ns:wsSubjects", document, XPathConstants.NODESET);
+
+      List<Member> members = new ArrayList<>();
+      for (int i = 0; i < nodes.getLength(); i++) {
+        Node item = nodes.item(i);
+        if (nonNilNode(item)) {
+          members.add(parseMember(xpath, item));
+        }
+      }
+
+      return members;
+    } catch (SAXException | IOException | ParserConfigurationException | XPathExpressionException e) {
+      LOG.warn("Failed to parse the grouper response, return empty result.", e);
+      return Collections.emptyList();
+    }
+  }
+
+  private Member parseMember(XPath xpath, Node item) throws XPathExpressionException {
+    return new Member(xpath.evaluate("ns:id", item));
   }
 
   private List<Group> parseGroups(ResponseEntity<String> response) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {

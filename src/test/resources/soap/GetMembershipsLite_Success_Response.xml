@@ -1,0 +1,54 @@
+<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+   <soapenv:Body>
+      <ns:getMembersLiteResponse xmlns:ns="http://soap_v2_0.ws.grouper.middleware.internet2.edu/xsd">
+         <ns:return xsi:type="ns:WsGetMembersLiteResult" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ns:responseMetadata xsi:type="ns:WsResponseMeta">
+               <ns:millis xsi:nil="true"/>
+               <ns:resultWarnings xsi:nil="true"/>
+               <ns:serverVersion>2.1.5</ns:serverVersion>
+            </ns:responseMetadata>
+            <ns:resultMetadata xsi:type="ns:WsResultMeta">
+               <ns:params xsi:nil="true"/>
+               <ns:resultCode>SUCCESS</ns:resultCode>
+               <ns:resultCode2 xsi:nil="true"/>
+               <ns:resultMessage>Success for: clientVersion: 2.0.0, wsGroupLookups: Array size: 1: [0]: WsGroupLookup[pitGroups=[],groupName=nl:surfnet:diensten:authz-admins]
+
+, memberFilter: All, includeSubjectDetail: false, actAsSubject: null, fieldName: null, subjectAttributeNames: null
+, paramNames: 
+, params: null
+, sourceIds: null
+, pointInTimeFrom: null, pointInTimeTo: null, pageSize: null, pageNumber: null, sortString: null, ascending: null</ns:resultMessage>
+               <ns:success>T</ns:success>
+            </ns:resultMetadata>
+            <ns:subjectAttributeNames xsi:nil="true"/>
+            <ns:wsGroup xsi:type="ns:WsGroup">
+               <ns:description>People that are allowed to use the oauth2-admin application</ns:description>
+               <ns:detail xsi:nil="true"/>
+               <ns:displayExtension>authz-admins</ns:displayExtension>
+               <ns:displayName>nl:surfnet:diensten:authz-admins</ns:displayName>
+               <ns:extension>authz-admins</ns:extension>
+               <ns:name>nl:surfnet:diensten:authz-admins</ns:name>
+               <ns:uuid>a52f28cefdff34a0b930b728c8fd26ba</ns:uuid>
+            </ns:wsGroup>
+            <ns:wsSubjects xsi:type="ns:WsSubject">
+               <ns:attributeValues xsi:nil="true"/>
+               <ns:id>urn:collab:person:surfnet.nl:user</ns:id>
+               <ns:identifierLookup xsi:nil="true"/>
+               <ns:name xsi:nil="true"/>
+               <ns:resultCode>SUCCESS</ns:resultCode>
+               <ns:sourceId>openconext-ldap</ns:sourceId>
+               <ns:success>T</ns:success>
+            </ns:wsSubjects>
+            <ns:wsSubjects xsi:type="ns:WsSubject">
+               <ns:attributeValues xsi:nil="true"/>
+               <ns:id>urn:collab:person:example.com:admin</ns:id>
+               <ns:identifierLookup xsi:nil="true"/>
+               <ns:name xsi:nil="true"/>
+               <ns:resultCode>SUCCESS</ns:resultCode>
+               <ns:sourceId>openconext-ldap</ns:sourceId>
+               <ns:success>T</ns:success>
+            </ns:wsSubjects>
+         </ns:return>
+      </ns:getMembersLiteResponse>
+   </soapenv:Body>
+</soapenv:Envelope>
