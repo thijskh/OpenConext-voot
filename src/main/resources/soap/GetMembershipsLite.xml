@@ -6,6 +6,7 @@
       <xsd:clientVersion>2.0.0</xsd:clientVersion>
       <!-- We use the unique name of Grouper as the identifier within SURFconext -->
       <xsd:groupName>[groupId]</xsd:groupName>
+      <xsd:includeSubjectDetail>true</xsd:includeSubjectDetail>
     </xsd:getMembershipsLite>
   </soapenv:Body>
 </soapenv:Envelope>

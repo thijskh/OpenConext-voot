@@ -115,7 +115,7 @@ public class GrouperSoapClientTest {
     List<Member> members = subject.getMembersOfGroup("urn:collab:group:surfnet.nl:some_group");
 
     assertThat(members, hasSize(2));
-    assertThat(members, hasItem(new Member("urn:collab:person:example.com:admin")));
+    assertThat(members, hasItem(new Member("urn:collab:person:example.com:admin", "John Doe")));
   }
 
   private void stubGrouperCall(String responseFile) throws IOException {

@@ -34,7 +34,7 @@
                <ns:attributeValues xsi:nil="true"/>
                <ns:id>urn:collab:person:surfnet.nl:user</ns:id>
                <ns:identifierLookup xsi:nil="true"/>
-               <ns:name xsi:nil="true"/>
+               <ns:name>User</ns:name>
                <ns:resultCode>SUCCESS</ns:resultCode>
                <ns:sourceId>openconext-ldap</ns:sourceId>
                <ns:success>T</ns:success>
@@ -43,7 +43,7 @@
                <ns:attributeValues xsi:nil="true"/>
                <ns:id>urn:collab:person:example.com:admin</ns:id>
                <ns:identifierLookup xsi:nil="true"/>
-               <ns:name xsi:nil="true"/>
+               <ns:name>John Doe</ns:name>
                <ns:resultCode>SUCCESS</ns:resultCode>
                <ns:sourceId>openconext-ldap</ns:sourceId>
                <ns:success>T</ns:success>

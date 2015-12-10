@@ -146,7 +146,7 @@ public class GrouperSoapClient extends AbstractProvider {
   }
 
   private Member parseMember(XPath xpath, Node item) throws XPathExpressionException {
-    return new Member(xpath.evaluate("ns:id", item));
+    return new Member(xpath.evaluate("ns:id", item), xpath.evaluate("ns:name", item));
   }
 
   private List<Group> parseGroups(ResponseEntity<String> response) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
