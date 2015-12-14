@@ -53,6 +53,11 @@ public class GrouperSoapClient extends AbstractProvider {
   }
 
   @Override
+  public boolean supportsGettingMembersOfGroup() {
+    return true;
+  }
+
+  @Override
   public List<Group> getGroupMemberships(final String uid) {
     Map<String, String> replacements = ImmutableMap.of("subjectId", uid);
 
@@ -94,6 +99,7 @@ public class GrouperSoapClient extends AbstractProvider {
     }
   }
 
+  @Override
   public List<Member> getMembersOfGroup(final String groupId) {
     String localGroupId = UrnUtils.extractLocalGroupId(groupId)
         .orElseThrow(() -> new IllegalArgumentException("Unable to infer localgroupId from " + groupId));
@@ -213,4 +219,5 @@ public class GrouperSoapClient extends AbstractProvider {
 
     return buffer.toString();
   }
+
 }

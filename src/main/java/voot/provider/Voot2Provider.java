@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import voot.util.UrnUtils;
 import voot.valueobject.Group;
+import voot.valueobject.Member;
 import voot.valueobject.Membership;
 
 public class Voot2Provider extends AbstractProvider {
@@ -71,6 +72,16 @@ public class Voot2Provider extends AbstractProvider {
     }
   }
 
+  @Override
+  public boolean supportsGettingMembersOfGroup() {
+    return false;
+  }
+
+  @Override
+  public List<Member> getMembersOfGroup(String groupId) {
+    return Collections.emptyList();
+  }
+
   @SuppressWarnings("unchecked")
   protected List<Group> parseGroups(String response) {
     List<Map<String, Object>> maps = parseJson(response, List.class);
@@ -90,6 +101,5 @@ public class Voot2Provider extends AbstractProvider {
       configuration.name,
       item.containsKey("membership") ? Membership.fromRole((String) ((Map) item.get("membership")).get("basic")) : Membership.defaultMembership);
   }
-
 
 }

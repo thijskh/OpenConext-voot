@@ -23,6 +23,8 @@ import voot.oauth.ClientCredentialsAuthentication;
 import voot.oauth.SchacHomeAuthentication;
 import voot.util.UrnUtils;
 import voot.valueobject.Group;
+import voot.valueobject.Member;
+import voot.web.VootController.MalformedGroupUrnException;
 
 @RestController
 public class VootController {
@@ -122,6 +124,20 @@ public class VootController {
     LOG.debug("internal/external-groups/{} result: {}", userId, groups);
 
     return groups;
+  }
+
+  @RequestMapping(value = "/internal/groups/{groupId}/members")
+  public List<Member> membersOfGroup(@PathVariable String groupId, final OAuth2Authentication authentication) throws MalformedGroupUrnException {
+    String accessToken = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
+    String clientId = authentication.getOAuth2Request().getClientId();
+
+    LOG.debug("internal/groups/{}/members, accessToken: {}, clientId {}", groupId, accessToken, clientId);
+
+    assertClientCredentialsClient(authentication, clientId);
+
+    UrnUtils.getSchacHomeFromGroupUrn(groupId).orElseThrow(() -> new MalformedGroupUrnException(groupId));
+
+    return externalGroupsService.getMembersOfGroup(groupId);
   }
 
   private void assertClientCredentialsClient(OAuth2Authentication authentication, String clientId) {

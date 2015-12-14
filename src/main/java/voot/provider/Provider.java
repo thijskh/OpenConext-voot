@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import voot.valueobject.Group;
+import voot.valueobject.Member;
 
 public interface Provider {
 
@@ -30,6 +31,11 @@ public interface Provider {
   boolean isExternalGroupProvider();
 
   /**
+   * Does this provider support the retrieval of members of a group.
+   */
+  boolean supportsGettingMembersOfGroup();
+
+  /**
    *
    * @param uid the fully qualified uid
    */
@@ -42,6 +48,8 @@ public interface Provider {
    * @return the Group membership info if the user is indeed a member of the group, the empty Optional otherwise.
    */
   Optional<Group> getGroupMembership(String uid, String groupId);
+
+  List<Member> getMembersOfGroup(String groupId);
 
   class Configuration {
 

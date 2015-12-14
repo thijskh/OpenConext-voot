@@ -6,11 +6,14 @@ import voot.provider.AbstractProvider;
 import voot.provider.GroupProviderType;
 import voot.provider.Provider;
 import voot.valueobject.Group;
+import voot.valueobject.Member;
 import voot.valueobject.Membership;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import com.google.common.collect.ImmutableList;
 
 public class MockProvider extends AbstractProvider {
 
@@ -64,5 +67,15 @@ public class MockProvider extends AbstractProvider {
 
   private Group defaultGroup(String id) {
     return new Group(id, "came from" + this.toString(), "description", SCHAC_HOME_ORGANIZATION, Membership.defaultMembership);
+  }
+
+  @Override
+  public boolean supportsGettingMembersOfGroup() {
+    return false;
+  }
+
+  @Override
+  public List<Member> getMembersOfGroup(String groupId) {
+    return ImmutableList.of(new Member("id", "name"));
   }
 }

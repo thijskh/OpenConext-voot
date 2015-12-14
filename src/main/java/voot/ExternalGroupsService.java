@@ -4,6 +4,9 @@ import com.google.common.base.Preconditions;
 
 import voot.provider.Provider;
 import voot.valueobject.Group;
+import voot.valueobject.Member;
+
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +26,6 @@ public class ExternalGroupsService {
 
   private final List<Provider> providers;
   private final ForkJoinPool forkJoinPool;
-
 
   public ExternalGroupsService(List<Provider> providers) {
     Preconditions.checkArgument(providers.size() > 0, "No clients configured");
@@ -75,11 +77,18 @@ public class ExternalGroupsService {
             }
           })
           .flatMap(Collection::stream)
-          .collect(Collectors.toList());
+          .collect(toList());
       }).get();
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException("Unable to schedule querying of external group providers.", e);
     }
+  }
+
+  public List<Member> getMembersOfGroup(String groupId) {
+    return this.providers.stream()
+      .filter(provider -> provider.supportsGettingMembersOfGroup() && provider.shouldBeQueriedForGroup(groupId))
+      .findFirst().map(provider -> provider.getMembersOfGroup(groupId))
+      .orElse(Collections.emptyList());
   }
 
 }
