@@ -74,7 +74,7 @@ public class Voot2Provider extends AbstractProvider {
 
   @Override
   public boolean supportsGettingMembersOfGroup() {
-    return false;
+    return configuration.supportsGetMembers;
   }
 
   @Override

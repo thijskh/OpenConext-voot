@@ -25,7 +25,13 @@ public class OpenSocialClientTest {
   private static final String USER_URN = "urn:collab:person:example.org:" + UID;
   private static final String GROUP_URN = "urn:collab:group:surfteams.nl:" + GROUP_ID;
 
-  private Configuration configuration = new Configuration(GroupProviderType.OPEN_SOCIAL, "http://localhost:8889", new Configuration.Credentials("user", "password"), 2000, "example.org", "Example");
+  private Configuration configuration = Configuration.builder()
+      .setType(GroupProviderType.OPEN_SOCIAL)
+      .setUrl("http://localhost:8889")
+      .setCredentials("user", "password")
+      .setTimeOutMillis(2000)
+      .setSchacHomeOrganization("example.org")
+      .setName("Example").build();
   private OpenSocialClient subject = new OpenSocialClient(configuration);
 
   @Rule

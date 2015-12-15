@@ -124,8 +124,13 @@ public class GrouperSoapClientTest {
   }
 
   private GrouperSoapClient getSubject(String url) {
-    Provider.Configuration.Credentials credentials = new Provider.Configuration.Credentials("gadget", "gadget");
-    return new GrouperSoapClient(new Provider.Configuration(GroupProviderType.GROUPER, url, credentials, 2000, "surfnet.nl", "surfnet"));
+    return new GrouperSoapClient(Provider.Configuration.builder()
+        .setType(GroupProviderType.GROUPER)
+        .setUrl(url)
+        .setCredentials("gadget", "gadget")
+        .setTimeOutMillis(2000)
+        .setSchacHomeOrganization("surfnet.nl")
+        .setName("surfnet").build());
   }
 
   private GrouperSoapClient getVMSubject() {

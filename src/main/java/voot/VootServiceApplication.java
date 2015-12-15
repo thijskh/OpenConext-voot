@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
 import org.springframework.security.oauth2.provider.authentication.TokenExtractor;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import voot.authz.AuthzResourceServerTokenServices;
@@ -28,10 +27,14 @@ import voot.oidc.OidcRemoteTokenServices;
 import voot.provider.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.util.StringUtils.trimTrailingCharacter;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SpringBootApplication()
@@ -53,22 +56,24 @@ public class VootServiceApplication {
 
     @SuppressWarnings("unchecked")
     Map<String, List<Map<String, Object>>> config = (Map<String, List<Map<String, Object>>>) yaml.load(resourceLoader.getResource(configFileLocation).getInputStream());
-    final List<Map<String, Object>> externalGroupProviders = config.get("externalGroupProviders");
+    List<Map<String, Object>> externalGroupProviders = config.get("externalGroupProviders");
 
-    final List<Provider> groupClients = externalGroupProviders.stream().map(entryMap -> {
-      final String type = (String) entryMap.get("type");
-      final String url = StringUtils.trimTrailingCharacter((String) entryMap.get("url"), '/');
-      final String schacHomeOrganization = (String) entryMap.get("schacHomeOrganization");
-      final String name = (String) entryMap.get("name");
-      final Integer timeoutMillis = (Integer) entryMap.get("timeoutMillis");
-      @SuppressWarnings("unchecked")
-      final Map<String, Object> rawCredentials = (Map<String, Object>) entryMap.get("credentials");
-      String username = (String) rawCredentials.get("username");
-      String secret = (String) rawCredentials.get("secret");
-
+    List<Provider> groupClients = externalGroupProviders.stream().map(entryMap -> {
+      String type = (String) entryMap.get("type");
       GroupProviderType groupProviderType = GroupProviderType.valueOf(type.toUpperCase());
+      @SuppressWarnings("unchecked")
+      Map<String, Object> rawCredentials = (Map<String, Object>) entryMap.get("credentials");
 
-      final Provider.Configuration configuration = new Provider.Configuration(groupProviderType, url, new Provider.Configuration.Credentials(username, secret), timeoutMillis, schacHomeOrganization, name);
+      Provider.Configuration configuration = Provider.Configuration.builder()
+          .setType(groupProviderType)
+          .setUrl(trimTrailingCharacter((String) entryMap.get("url"), '/'))
+          .setCredentials((String) rawCredentials.get("username"), (String) rawCredentials.get("secret"))
+          .setTimeOutMillis((Integer) entryMap.get("timeoutMillis"))
+          .setSchacHomeOrganization((String) entryMap.get("schacHomeOrganization"))
+          .setName((String) entryMap.get("name"))
+          .setSupportsGetMembers(Optional.ofNullable((Boolean) entryMap.get("supportsGetMembers")).orElse(false))
+          .build();
+
       switch (groupProviderType) {
         case VOOT2:
           return new Voot2Provider(configuration);
